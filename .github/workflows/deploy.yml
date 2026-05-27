@@ -21,7 +21,7 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
 
         script: |
-          cd /home/ubuntu/apps/YOUR_REPO_NAME
+          cd /home/ubuntu/apps/django-multiple-user-types-example
 
           git pull origin main
 
