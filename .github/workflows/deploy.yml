@@ -23,11 +23,11 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
 
           script: |
-            cd /opt/django-app
+            cd /opt/django-app/django27-05-2026M/django_school
 
             git pull origin main
-
-            source venv/bin/activate
+ 
+            source ../venv/bin/activate
 
             pip install -r requirements.txt
 
