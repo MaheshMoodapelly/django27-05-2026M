@@ -1,4 +1,4 @@
-#deploying a simple Django backend applucation
+#deploying a simple Django backend application
 name: Deploy Django
 
 on:
