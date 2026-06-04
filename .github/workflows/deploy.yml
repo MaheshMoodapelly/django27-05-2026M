@@ -1,34 +1,33 @@
-#deploying a simple Django backend application
-name: Deploy Django
-#the GutHub actions are triggered when the changes are committed and pushed to branch main
+name: Deploy Django to EC2
+
 on:
   push:
     branches:
       - main
-#1)list of the events that should start performing once the workflow is triggered
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-
-      - uses: actions/checkout@v4
-
-      - name: Deploy to EC2
+      - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
-
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /opt/django-app/django27-05-2026M/django_school
-
+            cd /opt/django-app/django27-05-2026M
             git pull origin main
- 
-            source ../venv/bin/activate
 
+            source venv/bin/activate
             pip install -r requirements.txt
 
             python manage.py migrate --noinput
+
+            pkill -f runserver || true
+            pkill -f gunicorn || true
+
+            nohup gunicorn django_school.wsgi:application \
+              --bind 127.0.0.1:8000 \
+              --daemon
