@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-
+#list of the events that should start performing once the workflow is triggered
 jobs:
   deploy:
     runs-on: ubuntu-latest
