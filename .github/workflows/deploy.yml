@@ -1,6 +1,6 @@
 #deploying a simple Django backend application
 name: Deploy Django
-
+#the GutHub actions are triggered when the changes are committed and pushed to branch main
 on:
   push:
     branches:
