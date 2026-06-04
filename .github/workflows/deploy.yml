@@ -18,7 +18,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /opt/django-app/django27-05-2026M
+            cd /opt/django-app/django27-05-2026M/django_school
             git pull origin main
 
             source venv/bin/activate
