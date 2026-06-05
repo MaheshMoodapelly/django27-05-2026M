@@ -1,6 +1,5 @@
-#deploying a simple Django backend application
 name: Deploy Django
-#the GutHub actions are triggered when the changes are committed and pushed to branch main
+
 on:
   push:
     branches:
@@ -11,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - uses: actions/checkout@v4
 
       - name: Deploy to EC2
@@ -26,9 +24,12 @@ jobs:
             cd /opt/django-app/django27-05-2026M/django_school
 
             git pull origin main
- 
+
             source ../venv/bin/activate
 
             pip install -r requirements.txt
 
             python manage.py migrate --noinput
+
+            # 🔥 IMPORTANT: restart your Django service
+            sudo systemctl restart gunicorn
