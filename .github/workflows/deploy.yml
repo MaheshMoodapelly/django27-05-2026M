@@ -1,4 +1,4 @@
-name: Deploy Django App
+name: Deploy Django to EC2
 
 on:
   push:
@@ -10,42 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-    
+
           script: |
             set -e
 
-            echo "🚀 Starting deployment..."
+            echo "Starting deployment..."
 
-            cd /opt/django-app/django27-05-2026M/django_school
+            cd /opt/django-app/django27-05-2026M
 
-            echo "📥 Pulling latest code..."
             git pull origin main
 
-            echo "🐍 Activating virtual environment..."
+            cd django_school
+
             source ../venv/bin/activate
 
-            echo "📦 Installing dependencies..."
             pip install -r requirements.txt
 
-            echo "🗄 Running migrations..."
             python manage.py migrate --noinput
 
-            echo "🛑 Stopping old Gunicorn..."
-            pkill -f "gunicorn django_school.wsgi" || true
+            python manage.py collectstatic --noinput
 
-            sleep 2
+            pkill -f gunicorn || true
 
-            echo "🚀 Starting Gunicorn..."
             nohup gunicorn django_school.wsgi:application \
               --bind 127.0.0.1:8000 \
-              --workers 3 \
-              --log-file gunicorn.log \
-              > gunicorn.log 2>&1 &
+              --daemon
 
-            echo "✅ Deployment complete!"
+            echo "Deployment completed successfully."            echo "✅ Deployment complete!"
