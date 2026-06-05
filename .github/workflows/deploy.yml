@@ -10,10 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Deploy to EC2
+      - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -37,6 +36,11 @@ jobs:
 
             python manage.py collectstatic --noinput
 
-            systemctl restart gunicorn
+            pkill -f gunicorn || true
 
-            echo "Deployment completed successfully."
+            nohup gunicorn django_school.wsgi:application \
+              --bind 127.0.0.1:8000 \
+              --workers 3 \
+              --daemon
+
+            echo "Deployment successful"
