@@ -43,8 +43,8 @@ jobs:
             python manage.py collectstatic --noinput --clear
 
             echo "♻️ Restarting Gunicorn..."
-            sudo systemctl restart gunicorn
+            systemctl restart gunicorn
 
             echo "✅ Deployment completed successfully at $(date)"
             echo "Gunicorn status:"
-            sudo systemctl status gunicorn --no-pager -l
+            systemctl status gunicorn --no-pager -l
