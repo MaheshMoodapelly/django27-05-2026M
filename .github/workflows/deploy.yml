@@ -23,8 +23,6 @@ jobs:
           script: |
             set -e
 
-            echo "Starting deployment..."
-
             cd /opt/django-app/django27-05-2026M
 
             git pull origin main
@@ -37,12 +35,8 @@ jobs:
 
             python manage.py migrate --noinput
 
-            python manage.py collectstatic --noinput || true
+            python manage.py collectstatic --noinput
 
-            pkill -f gunicorn || true
-
-            nohup gunicorn django_school.wsgi:application \
-              --bind 127.0.0.1:8000 \
-              --daemon
+            sudo systemctl restart gunicorn
 
             echo "Deployment completed successfully."
