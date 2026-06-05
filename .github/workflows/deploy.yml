@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
 
     steps:
       - name: Checkout Repository
@@ -19,8 +20,6 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          
-          
           command_timeout: 30m
           
           script: |
@@ -34,18 +33,18 @@ jobs:
 
             source ../venv/bin/activate
 
-            echo "Installing dependencies..."
+            echo "📦 Installing dependencies..."
             pip install -r requirements.txt --no-cache-dir
 
-            echo "Running migrations..."
+            echo "🔄 Running migrations..."
             python manage.py migrate --noinput
 
-            echo "Collecting static files..."
+            echo "📁 Collecting static files..."
             python manage.py collectstatic --noinput --clear
 
-            echo "Restarting Gunicorn..."
-            systemctl restart gunicorn
+            echo "♻️ Restarting Gunicorn..."
+            sudo systemctl restart gunicorn
 
             echo "✅ Deployment completed successfully at $(date)"
             echo "Gunicorn status:"
-            systemctl status gunicorn --no-pager -l
+            sudo systemctl status gunicorn --no-pager -l
