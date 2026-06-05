@@ -1,5 +1,6 @@
-name: Deploy Django to EC2
-
+#deploying a simple Django backend application
+name: Deploy Django
+#the GutHub actions are triggered when the changes are committed and pushed to branch main
 on:
   push:
     branches:
@@ -8,43 +9,26 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
 
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.2.5
+        uses: appleboy/ssh-action@v1.0.3
+
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          command_timeout: 30m
-          
+
           script: |
-            set -e
-            echo "🚀 Starting deployment at $(date)"
+            cd /opt/django-app/django27-05-2026M/django_school
 
-            cd /opt/django-app/django27-05-2026M
             git pull origin main
-
-            cd django_school
-
+ 
             source ../venv/bin/activate
 
-            echo "📦 Installing dependencies..."
-            pip install -r requirements.txt --no-cache-dir
+            pip install -r requirements.txt
 
-            echo "🔄 Running migrations..."
             python manage.py migrate --noinput
-
-            echo "📁 Collecting static files..."
-            python manage.py collectstatic --noinput --clear
-
-            echo "♻️ Restarting Gunicorn..."
-            systemctl restart gunicorn
-
-            echo "✅ Deployment completed successfully at $(date)"
-            echo "Gunicorn status:"
-            systemctl status gunicorn --no-pager -l
