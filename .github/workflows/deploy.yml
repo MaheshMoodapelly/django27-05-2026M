@@ -20,8 +20,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           
-          # This is the most important fix
-          command_timeout: 30m     # Increase to 20m or 30m
+          
+          command_timeout: 30m
           
           script: |
             set -e
@@ -44,8 +44,8 @@ jobs:
             python manage.py collectstatic --noinput --clear
 
             echo "Restarting Gunicorn..."
-            sudo systemctl restart gunicorn
+            systemctl restart gunicorn
 
             echo "✅ Deployment completed successfully at $(date)"
             echo "Gunicorn status:"
-            sudo systemctl status gunicorn --no-pager -l
+            systemctl status gunicorn --no-pager -l
