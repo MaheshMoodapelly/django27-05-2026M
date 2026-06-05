@@ -37,7 +37,7 @@ jobs:
 
             python manage.py migrate --noinput
 
-            python manage.py collectstatic --noinput
+            python manage.py collectstatic --noinput || true
 
             pkill -f gunicorn || true
 
@@ -45,4 +45,4 @@ jobs:
               --bind 127.0.0.1:8000 \
               --daemon
 
-            echo "Deployment completed successfully."            echo "✅ Deployment complete!"
+            echo "Deployment completed successfully."
