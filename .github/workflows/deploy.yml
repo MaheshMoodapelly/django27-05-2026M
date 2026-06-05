@@ -31,5 +31,5 @@ jobs:
 
             python manage.py migrate --noinput
 
-            # 🔥 IMPORTANT: restart your Django service
+            
             sudo systemctl restart gunicorn
