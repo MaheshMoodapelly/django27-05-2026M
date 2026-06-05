@@ -37,6 +37,6 @@ jobs:
 
             python manage.py collectstatic --noinput
 
-            sudo systemctl restart gunicorn
+            systemctl restart gunicorn
 
             echo "Deployment completed successfully."
