@@ -32,9 +32,11 @@ jobs:
 
             python manage.py migrate --noinput
 
-            pkill -f runserver || true
-            pkill -f gunicorn || true
+            pkill -f "gunicorn django_school.wsgi" || true
+
+            sleep 2
 
             nohup gunicorn django_school.wsgi:application \
               --bind 127.0.0.1:8000 \
-              --daemon
+              --workers 3 \
+              > gunicorn.log 2>&1 &  --daemon
